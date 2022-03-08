@@ -1,0 +1,210 @@
+-- ----------------------------------------------------------------
+--  DATABASE cab302db
+-- ----------------------------------------------------------------
+
+CREATE DATABASE cab302db
+   CHARACTER SET `latin1`
+   COLLATE `latin1_swedish_ci`;-- ----------------------------------------------------------------
+--  TABLE assets
+-- ----------------------------------------------------------------
+
+CREATE TABLE cab302db.assets
+(
+   `assetID`             INT(20) NOT NULL AUTO_INCREMENT COMMENT 'Unique asset ID',
+   `assetName`           VARCHAR(20)
+                           CHARACTER SET latin1
+                           COLLATE latin1_swedish_ci
+                           NOT NULL
+                           COMMENT 'Name of the asset
+',
+   `assetDescription`    VARCHAR(20)
+                           CHARACTER SET latin1
+                           COLLATE latin1_swedish_ci
+                           NOT NULL
+                           COMMENT 'Detailed description of the asset',
+   `assetCategory`       VARCHAR(20)
+                           CHARACTER SET latin1
+                           COLLATE latin1_swedish_ci
+                           NOT NULL
+                           COMMENT 'Category in which the asset belongs',
+   `assetActive`         TINYINT(20)
+                           NOT NULL
+                           COMMENT 'Is the asset active, 1 for yes or 0 for no',
+   PRIMARY KEY(`assetID`)
+)
+ENGINE INNODB
+COLLATE 'latin1_swedish_ci'
+ROW_FORMAT DEFAULT;
+
+-- ----------------------------------------------------------------
+--  TABLE departments
+-- ----------------------------------------------------------------
+
+CREATE TABLE cab302db.departments
+(
+   `departmentID`         INT(20)
+                            NOT NULL
+                            AUTO_INCREMENT
+                            COMMENT 'Unique Department ID',
+   `departmentName`       VARCHAR(30)
+                            CHARACTER SET latin1
+                            COLLATE latin1_swedish_ci
+                            NOT NULL
+                            COMMENT 'Department name',
+   `departmentManager`    INT(30)
+                            NOT NULL
+                            COMMENT 'UserID for Department Manager',
+   `departmentCredits`    INT(30)
+                            NOT NULL
+                            COMMENT 'Number of credits held by the Department',
+   `departmentActive`     TINYINT(1)
+                            NOT NULL
+                            DEFAULT 1
+                            COMMENT 'Is the Department currently active',
+   PRIMARY KEY(`departmentID`)
+)
+ENGINE MYISAM
+COLLATE 'latin1_swedish_ci'
+ROW_FORMAT DEFAULT;
+
+-- ----------------------------------------------------------------
+--  TABLE inventories
+-- ----------------------------------------------------------------
+
+CREATE TABLE cab302db.inventories
+(
+   `inventoryID`        INT(20)
+                          NOT NULL
+                          AUTO_INCREMENT
+                          COMMENT 'Unique Inventory ID',
+   `assetID`            INT(20) NOT NULL COMMENT 'Asset ID',
+   `departmentID`       INT(20) NOT NULL COMMENT 'Department ID',
+   quantity             INT(20)
+                          NOT NULL
+                          COMMENT 'Quantity of particular asset held by OU',
+   `inventoryActive`    TINYINT(1)
+                          NOT NULL
+                          DEFAULT 1
+                          COMMENT 'Is the Inventory currently active',
+   PRIMARY KEY(`inventoryID`)
+)
+ENGINE MYISAM
+COLLATE 'latin1_swedish_ci'
+ROW_FORMAT DEFAULT;
+
+-- ----------------------------------------------------------------
+--  TABLE orders
+-- ----------------------------------------------------------------
+
+CREATE TABLE cab302db.orders
+(
+   `orderID`         INT(20) NOT NULL AUTO_INCREMENT COMMENT 'Unique Order ID',
+   `orderType`       TINYINT(1)
+                       NOT NULL
+                       COMMENT 'Buy(true) or Sell(false) order',
+   `userID`          INT(20) NOT NULL COMMENT 'User ID',
+   `assetID`         INT(20) NOT NULL COMMENT 'Asset ID',
+   `departmentID`    INT(20) NOT NULL COMMENT 'OU ID',
+   quantity          INT(20)
+                       NOT NULL
+                       COMMENT 'Quantity of particular asset to be bought/sold',
+   `limitPrice`      INT(20)
+                       NOT NULL
+                       COMMENT 'Limit price for an individual asset',
+   `orderDate`       DATETIME(0)
+                       NOT NULL
+                       DEFAULT CURRENT_TIMESTAMP()
+                       COMMENT 'The Timestamp for when the order was placed',
+   `orderStatus`     INT(1)
+                       NOT NULL
+                       COMMENT 'The current status of the order',
+   `expiryDate`      DATETIME(0)
+                       NOT NULL
+                       COMMENT 'Timestamp for when the order will expire if not filled.',
+   PRIMARY KEY(`orderID`)
+)
+ENGINE MYISAM
+COLLATE 'latin1_swedish_ci'
+ROW_FORMAT DEFAULT;
+
+-- ----------------------------------------------------------------
+--  TABLE orderstatus
+-- ----------------------------------------------------------------
+
+CREATE TABLE cab302db.orderstatus
+(
+   `orderStatusID`      INT(20)
+                          NOT NULL
+                          AUTO_INCREMENT
+                          COMMENT 'Unique Order Status ID',
+   `orderStatusDesc`    VARCHAR(20)
+                          CHARACTER SET latin1
+                          COLLATE latin1_swedish_ci
+                          NOT NULL
+                          COMMENT 'Description for the order status',
+   PRIMARY KEY(`orderStatusID`)
+)
+ENGINE MYISAM
+COLLATE 'latin1_swedish_ci'
+ROW_FORMAT DEFAULT;
+
+-- ----------------------------------------------------------------
+--  TABLE trades
+-- ----------------------------------------------------------------
+
+CREATE TABLE cab302db.trades
+(
+   `tradeID`        INT(20) NOT NULL AUTO_INCREMENT COMMENT 'Unique Trade ID',
+   `buyOrderID`     INT(20) NOT NULL COMMENT 'Buy Order ID',
+   `sellOrderID`    INT(20) NOT NULL COMMENT 'Sell Order ID',
+   `assetID`        INT(20) NOT NULL COMMENT 'Asset ID',
+   `tradeTime`      DATETIME(0)
+                      NULL
+                      DEFAULT NULL
+                      COMMENT 'Timestamp for when trade was completed',
+   PRIMARY KEY(`tradeID`)
+)
+ENGINE MYISAM
+COLLATE 'latin1_swedish_ci'
+ROW_FORMAT DEFAULT;
+
+-- ----------------------------------------------------------------
+--  TABLE users
+-- ----------------------------------------------------------------
+
+CREATE TABLE cab302db.users
+(
+   `userID`             INT(20)
+                          NOT NULL
+                          AUTO_INCREMENT
+                          COMMENT 'Unique user ID Employee ID',
+   `firstName`          VARCHAR(30)
+                          CHARACTER SET latin1
+                          COLLATE latin1_swedish_ci
+                          NOT NULL
+                          COMMENT 'Users first name',
+   surname              VARCHAR(30)
+                          CHARACTER SET latin1
+                          COLLATE latin1_swedish_ci
+                          NOT NULL
+                          COMMENT 'Users surname',
+   email                VARCHAR(50)
+                          CHARACTER SET latin1
+                          COLLATE latin1_swedish_ci
+                          NOT NULL
+                          COMMENT 'Users email address',
+   `usersDepartment`    INT(20) NOT NULL COMMENT 'Users Organisational Unit',
+   password             VARCHAR(20)
+                          CHARACTER SET latin1
+                          COLLATE latin1_swedish_ci
+                          NOT NULL
+                          COMMENT 'Users Password',
+   `userActive`         TINYINT(1)
+                          NOT NULL
+                          DEFAULT 1
+                          COMMENT 'Is the user active',
+   PRIMARY KEY(`userID`)
+)
+ENGINE MYISAM
+COLLATE 'latin1_swedish_ci'
+ROW_FORMAT DEFAULT;
